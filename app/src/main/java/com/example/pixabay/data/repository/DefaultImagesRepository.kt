@@ -32,7 +32,7 @@ class DefaultImagesRepository @Inject constructor(
 //        if (Random.nextBoolean()) {
 //            error("network error")
 //        }
-        return imagesApi.searchImages(query = query).bodyOrThrow().map { it.mapToDomain() }
+        return imagesApi.searchImages(query = query).bodyOrThrow().images.map { it.mapToDomain() }
     }
 
     override suspend fun cacheImagesList(images: List<ImageModel>, query: String) {

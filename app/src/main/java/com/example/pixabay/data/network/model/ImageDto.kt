@@ -11,6 +11,6 @@ data class ImageDto(
     val username: String,
     @Json(name = "tags")
     val tags: String,
-    @Json(name = "previewURL") // todo - change to webformatURL for quality?
+    @Json(name = "webformatURL")
     val thumbnailUrl: String
 )

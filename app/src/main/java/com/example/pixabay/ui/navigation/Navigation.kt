@@ -1,5 +1,6 @@
 package com.example.pixabay.ui.navigation
 
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
@@ -26,7 +27,9 @@ fun Navigation() {
         NavHost(
             navController = navController,
             startDestination = Destination.Images.ROOT_ROUTE,
-            modifier = Modifier.padding(paddingValues)
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues)
         ) {
             imagesNavGraph(navController = navController)
         }
