@@ -4,7 +4,6 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import com.example.pixabay.ui.navigation.Destination
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import timber.log.Timber
 import javax.inject.Inject
@@ -15,11 +14,8 @@ class ImageDetailsViewModel @Inject constructor(
     // todo private val getImageDetailsUseCase: GetImageDetailsUseCase
 ) : ViewModel()  {
 
-    // todo debounce z m.p.
-
-    private val idState: StateFlow<String> = MutableStateFlow(
-        savedStateHandle.get<String>(Destination.Images.ID_PLACEHOLDER_NO_BRACKETS).orEmpty()
-    )
+    private val idState: StateFlow<String> =
+        savedStateHandle.getStateFlow(Destination.Images.ID_PLACEHOLDER_NO_BRACKETS, "")
 
     init {
         idState.value.let { Timber.d("IdState: $it") }

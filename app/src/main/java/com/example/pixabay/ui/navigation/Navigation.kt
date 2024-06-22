@@ -16,6 +16,7 @@ import androidx.navigation.navigation
 import com.example.pixabay.ui.features.images.details.ImageDetailsScreen
 import com.example.pixabay.ui.features.images.details.ImageDetailsViewModel
 import com.example.pixabay.ui.features.images.list.ImageListScreen
+import com.example.pixabay.ui.features.images.list.ImageListViewModel
 import com.example.pixabay.ui.navigation.Destination.Images.Companion.ID_PLACEHOLDER_NO_BRACKETS
 
 @Composable
@@ -38,7 +39,9 @@ private fun NavGraphBuilder.imagesNavGraph(navController: NavController) {
         startDestination = Destination.Images.List.route
     ) {
         composable(route = Destination.Images.List.route) {
+            val viewModel = hiltViewModel<ImageListViewModel>()
             ImageListScreen(
+                viewModel = viewModel,
                 goToImageDetailsScreen = { id ->
                     navController.navigate(Destination.Images.Details.createRoute(id))
                 },
