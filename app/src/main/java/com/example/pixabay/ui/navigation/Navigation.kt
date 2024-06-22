@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavType
@@ -13,6 +14,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import androidx.navigation.navigation
 import com.example.pixabay.ui.features.images.details.ImageDetailsScreen
+import com.example.pixabay.ui.features.images.details.ImageDetailsViewModel
 import com.example.pixabay.ui.features.images.list.ImageListScreen
 import com.example.pixabay.ui.navigation.Destination.Images.Companion.ID_PLACEHOLDER_NO_BRACKETS
 
@@ -46,10 +48,9 @@ private fun NavGraphBuilder.imagesNavGraph(navController: NavController) {
         composable(
             route = Destination.Images.Details.route,
             arguments = listOf(navArgument(ID_PLACEHOLDER_NO_BRACKETS) { type = NavType.StringType })
-        ) { backStackEntry ->
-            // todo use savedStateHandle from viewmodel
-            val id = backStackEntry.arguments?.getString(ID_PLACEHOLDER_NO_BRACKETS).orEmpty()
-            ImageDetailsScreen(id)
+        ) {
+            val viewModel = hiltViewModel<ImageDetailsViewModel>()
+            ImageDetailsScreen(viewModel)
         }
     }
 }

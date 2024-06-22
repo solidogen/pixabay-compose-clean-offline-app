@@ -10,13 +10,13 @@ import androidx.compose.ui.Modifier
 
 @Composable
 fun ImageDetailsScreen(
-    id: String
+    viewModel: ImageDetailsViewModel
 ) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
         modifier = Modifier.fillMaxSize()
     ) {
-        Text(text = "Details screen, id: $id")
+        Text(text = "Details screen, vm id: ${viewModel.getId()}")
     }
 }
