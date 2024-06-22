@@ -19,16 +19,15 @@ class GetImageListUseCase @Inject constructor(
         try {
             emit(DataState.loading())
 
-            // Cache
+            // Cached
             val cachedImagesResult = runCatching {
                 imagesRepository.getCachedImagesList(query = query)
             }
             val cachedImages = cachedImagesResult.getOrNull().orEmpty()
             if (cachedImagesResult.isSuccess) {
-                Timber.d("GetImageListUseCase: getCachedImagesList success")
                 emit(DataState.success(cachedImages))
             } else {
-                Timber.e(cachedImagesResult.exceptionOrNull(), "GetImageListUseCase: getCachedImagesList failed", )
+                Timber.e(cachedImagesResult.exceptionOrNull())
             }
 
             // Fresh
@@ -37,11 +36,27 @@ class GetImageListUseCase @Inject constructor(
             }
             val freshImages = freshImagesResult.getOrNull().orEmpty()
             if (freshImagesResult.isSuccess) {
-                Timber.d("GetImageListUseCase: getFreshImagesList success")
-                imagesRepository.cacheImagesList(images = freshImages, query = query)
-                emit(DataState.success(freshImages))
+                /**
+                 * Reducing recompositions, since every time we fetch a image from
+                 * pixabay, image urls are generated from scratch, although image stays the same
+                 *
+                 * Emitting only actual changes to the list
+                 * */
+                val updatedImages = freshImages.map { freshImage ->
+                    val correspondingCachedImage = cachedImages.find { it.id == freshImage.id }
+                    if (correspondingCachedImage != null) {
+                        freshImage.copy(
+                            thumbnailUrl = correspondingCachedImage.thumbnailUrl,
+                            largeImageUrl = correspondingCachedImage.largeImageUrl
+                        )
+                    } else {
+                        freshImage
+                    }
+                }
+                imagesRepository.cacheImagesList(images = updatedImages, query = query)
+                emit(DataState.success(updatedImages))
             } else {
-                Timber.e(freshImagesResult.exceptionOrNull(), "GetImageListUseCase: getFreshImagesList failed", )
+                Timber.e(freshImagesResult.exceptionOrNull())
                 emit(
                     DataState.error(
                         error = DataError.ErrorMessage(
@@ -52,7 +67,7 @@ class GetImageListUseCase @Inject constructor(
                 )
             }
         } catch (e: Throwable) {
-            Timber.e("GetImageListUseCase: error", e)
+            Timber.e(e)
             emit(DataState.error(DataError.UnknownError, cachedData = null))
         }
     }

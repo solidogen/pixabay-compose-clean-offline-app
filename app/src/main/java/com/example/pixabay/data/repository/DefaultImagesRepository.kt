@@ -10,7 +10,6 @@ import com.example.pixabay.domain.model.ImageModel
 import com.example.pixabay.domain.repository.ImagesRepository
 import kotlinx.coroutines.delay
 import javax.inject.Inject
-import kotlin.random.Random
 
 class DefaultImagesRepository @Inject constructor(
     private val imagesApi: ImagesApi,
@@ -28,11 +27,11 @@ class DefaultImagesRepository @Inject constructor(
 
     override suspend fun getFreshImagesList(query: String): List<ImageModel> {
         delay(1000)
-        // todo remove this
-//        if (Random.nextBoolean()) {
-//            error("network error")
-//        }
-        return imagesApi.searchImages(query = query).bodyOrThrow().images.map { it.mapToDomain() }
+        return imagesApi.searchImages(query = query)
+            .bodyOrThrow()
+            .images
+            .sortedBy { it.id }
+            .map { it.mapToDomain() }
     }
 
     override suspend fun cacheImagesList(images: List<ImageModel>, query: String) {
@@ -40,7 +39,7 @@ class DefaultImagesRepository @Inject constructor(
         imagesDao.insertOrReplaceImages(imageEntities)
     }
 
-    override suspend fun getImageDetails(id: String): String {
-        return "$id Details"
+    override suspend fun getImageById(id: String): ImageModel? {
+        return imagesDao.getImageById(id = id)?.mapToDomain()
     }
 }

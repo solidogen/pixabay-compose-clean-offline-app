@@ -22,8 +22,7 @@ class ImageListViewModel @Inject constructor(
     private val getImageListUseCase: GetImageListUseCase
 ) : ViewModel()  {
 
-    // todo debounce?
-    val images: Flow<DataState<List<ImageModel>>> =
+    val state: Flow<DataState<List<ImageModel>>> =
         savedStateHandle.getStateFlow(SEARCH_QUERY_KEY, DEFAULT_SEARCH_QUERY)
             .flatMapLatest { getImageListUseCase.execute(it) }
 

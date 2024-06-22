@@ -1,10 +1,8 @@
 package com.example.pixabay.ui.features.images.list
 
-import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
 import androidx.compose.foundation.lazy.staggeredgrid.items
@@ -13,10 +11,11 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.example.pixabay.domain.model.ImageModel
@@ -31,21 +30,27 @@ fun ImageListScreen(
 ) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center,
         modifier = Modifier.fillMaxSize()
     ) {
-        val state by viewModel.images.collectAsState(DataState.loading())
-        Text(text = "Images list screen")
-        VerticalSpace(padding = 16.dp)
+        val state by viewModel.state.collectAsState(DataState.loading())
+
+        // TODO - is this still needed?
+        val images by remember {
+            derivedStateOf { state.data }
+        }
 
         Button(onClick = {
             viewModel.setSearchQuery(listOf("Ala", "Kot", "Pat", "Mat").random())
         }) {
             Text(text = "Random query")
         }
-        state.data?.let {
-            ImageList(images = it, isLoading = state.isLoading)
-        }
+        VerticalSpace(padding = 16.dp)
+
+        ImageList(
+            images = images.orEmpty(),
+            goToImageDetailsScreen = goToImageDetailsScreen
+        )
+
         state.error?.let {
             ErrorState(error = it, onRetry = viewModel::retrySearch)
         }
@@ -59,15 +64,23 @@ fun ImageListScreen(
 }
 
 @Composable
-private fun ImageList(images: List<ImageModel>, isLoading: Boolean) {
+private fun ImageList(
+    images: List<ImageModel>,
+    goToImageDetailsScreen: (String) -> Unit
+) {
     LazyVerticalStaggeredGrid(
         columns = StaggeredGridCells.Fixed(2),
-        modifier = Modifier.alpha(if (isLoading) 0.5f else 1f)
     ) {
-        items(images) { item->
+        items(
+            items = images,
+            key = { it.id }
+        ) { image ->
             AsyncImage(
-                model = item.thumbnailUrl,
-                contentDescription = item.tags,
+                model = image.thumbnailUrl,
+                contentDescription = image.tags,
+                modifier = Modifier.clickable {
+                    goToImageDetailsScreen.invoke(image.id)
+                }
             )
         }
     }

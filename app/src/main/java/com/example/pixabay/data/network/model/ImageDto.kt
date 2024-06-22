@@ -12,5 +12,13 @@ data class ImageDto(
     @Json(name = "tags")
     val tags: String,
     @Json(name = "webformatURL")
-    val thumbnailUrl: String
+    val thumbnailUrl: String,
+    @Json(name = "largeImageURL")
+    val largeImageUrl: String,
+    @Json(name = "likes")
+    val likes: Int,
+    @Json(name = "downloads")
+    val downloads: Int,
+    @Json(name = "comments")
+    val comments: Int,
 )

@@ -8,14 +8,22 @@ fun ImageDto.mapToDomain(): ImageModel = ImageModel(
     id = id,
     username = username,
     tags = tags,
-    thumbnailUrl = thumbnailUrl
+    thumbnailUrl = thumbnailUrl,
+    largeImageUrl = largeImageUrl,
+    likes = likes,
+    downloads = downloads,
+    comments = comments
 )
 
 fun ImageEntity.mapToDomain(): ImageModel = ImageModel(
     id = id,
     username = username,
     tags = tags,
-    thumbnailUrl = thumbnailUrl
+    thumbnailUrl = thumbnailUrl,
+    largeImageUrl = largeImageUrl,
+    likes = likes,
+    downloads = downloads,
+    comments = comments
 )
 
 fun ImageModel.mapToEntity(query: String): ImageEntity = ImageEntity(
@@ -23,5 +31,9 @@ fun ImageModel.mapToEntity(query: String): ImageEntity = ImageEntity(
     username = username,
     tags = tags,
     thumbnailUrl = thumbnailUrl,
+    largeImageUrl = largeImageUrl,
+    likes = likes,
+    downloads = downloads,
+    comments = comments,
     query = query
 )

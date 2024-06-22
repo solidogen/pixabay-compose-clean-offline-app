@@ -2,24 +2,24 @@ package com.example.pixabay.ui.features.images.details
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
+import com.example.pixabay.domain.model.ImageModel
+import com.example.pixabay.domain.usecase.GetImageByIdUseCase
+import com.example.pixabay.domain.utils.DataState
 import com.example.pixabay.ui.navigation.Destination
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.StateFlow
-import timber.log.Timber
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flatMapLatest
 import javax.inject.Inject
 
 @HiltViewModel
+@OptIn(ExperimentalCoroutinesApi::class)
 class ImageDetailsViewModel @Inject constructor(
     private val savedStateHandle: SavedStateHandle,
-    // todo private val getImageDetailsUseCase: GetImageDetailsUseCase
+    private val getImageByIdUseCase: GetImageByIdUseCase
 ) : ViewModel()  {
 
-    private val idState: StateFlow<String> =
+    val state: Flow<DataState<ImageModel>> =
         savedStateHandle.getStateFlow(Destination.Images.ID_PLACEHOLDER_NO_BRACKETS, "")
-
-    init {
-        idState.value.let { Timber.d("IdState: $it") }
-    }
-
-    fun getId(): String = idState.value
+            .flatMapLatest { getImageByIdUseCase.execute(it) }
 }

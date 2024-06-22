@@ -15,6 +15,14 @@ data class ImageEntity(
     val tags: String,
     @ColumnInfo(name = "thumbnailUrl")
     val thumbnailUrl: String,
+    @ColumnInfo(name = "largeImageUrl")
+    val largeImageUrl: String,
+    @ColumnInfo(name = "likes")
+    val likes: Int,
+    @ColumnInfo(name = "downloads")
+    val downloads: Int,
+    @ColumnInfo(name = "comments")
+    val comments: Int,
     @ColumnInfo(name = "query")
     val query: String,
 )
