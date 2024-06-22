@@ -3,6 +3,7 @@ package com.example.pixabay.ui.features.images.list
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.pixabay.domain.model.ImageModel
 import com.example.pixabay.domain.usecase.GetImageListUseCase
 import com.example.pixabay.domain.utils.DataState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -22,7 +23,7 @@ class ImageListViewModel @Inject constructor(
 ) : ViewModel()  {
 
     // todo debounce?
-    val images: Flow<DataState<List<String>>> =
+    val images: Flow<DataState<List<ImageModel>>> =
         savedStateHandle.getStateFlow(SEARCH_QUERY_KEY, DEFAULT_SEARCH_QUERY)
             .flatMapLatest { getImageListUseCase.execute(it) }
 

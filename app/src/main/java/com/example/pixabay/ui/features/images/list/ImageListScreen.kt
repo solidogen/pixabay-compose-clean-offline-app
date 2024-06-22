@@ -5,6 +5,9 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
+import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
+import androidx.compose.foundation.lazy.staggeredgrid.items
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
@@ -15,6 +18,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.unit.dp
+import coil.compose.AsyncImage
+import com.example.pixabay.domain.model.ImageModel
 import com.example.pixabay.domain.utils.DataState
 import com.example.pixabay.ui.utils.ErrorState
 import com.example.pixabay.ui.utils.VerticalSpace
@@ -54,12 +59,16 @@ fun ImageListScreen(
 }
 
 @Composable
-private fun ImageList(images: List<String>, isLoading: Boolean) {
-    LazyColumn(
+private fun ImageList(images: List<ImageModel>, isLoading: Boolean) {
+    LazyVerticalStaggeredGrid(
+        columns = StaggeredGridCells.Fixed(2),
         modifier = Modifier.alpha(if (isLoading) 0.5f else 1f)
     ) {
-        items(images) {
-            Text(text = it)
+        items(images) { item->
+            AsyncImage(
+                model = item.thumbnailUrl,
+                contentDescription = item.tags,
+            )
         }
     }
 }
