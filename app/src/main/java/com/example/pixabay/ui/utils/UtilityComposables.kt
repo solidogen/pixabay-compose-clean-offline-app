@@ -5,7 +5,6 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -66,13 +65,24 @@ fun ErrorState(
 }
 
 @Composable
+fun LoadingIndicator(
+    modifier: Modifier = Modifier,
+    size: Dp? = null
+) {
+    CircularProgressIndicator(
+        modifier = modifier.apply {
+            size?.let { size(it) }
+        }
+    )
+}
+
+@Composable
 fun ImageComposable(
     image: ImageModel,
     url: (ImageModel) -> String,
     modifier: Modifier = Modifier,
 //    loadingIndicatorSize: Dp = 20.dp
 ) {
-    // todo change to LoadableAsyncImage below
     SubcomposeAsyncImage(
         model = url(image),
         contentDescription = image.tagsString,
@@ -81,8 +91,8 @@ fun ImageComposable(
     ) {
         val state = painter.state
         if (state is AsyncImagePainter.State.Loading || state is AsyncImagePainter.State.Error) {
-            CircularProgressIndicator(
-//                modifier = Modifier.size(loadingIndicatorSize)
+            LoadingIndicator(
+//                size = loadingIndicatorSize,
             )
         } else {
             SubcomposeAsyncImageContent()
@@ -90,7 +100,6 @@ fun ImageComposable(
     }
 }
 
-// todo use for ImageComposable instead of subcompose
 @Composable
 fun LoadableAsyncImage(
     modifier: Modifier = Modifier,

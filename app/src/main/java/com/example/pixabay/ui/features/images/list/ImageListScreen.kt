@@ -7,7 +7,6 @@ import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
 import androidx.compose.foundation.lazy.staggeredgrid.items
 import androidx.compose.material3.Button
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -21,6 +20,7 @@ import com.example.pixabay.domain.model.ImageModel
 import com.example.pixabay.domain.utils.DataState
 import com.example.pixabay.ui.utils.ErrorState
 import com.example.pixabay.ui.utils.ImageComposable
+import com.example.pixabay.ui.utils.LoadingIndicator
 import com.example.pixabay.ui.utils.VerticalSpace
 
 @Composable
@@ -55,7 +55,7 @@ fun ImageListScreen(
             ErrorState(error = it, onRetry = viewModel::retrySearch)
         }
         if (state.isLoading) {
-            CircularProgressIndicator()
+            LoadingIndicator()
         }
         Button(onClick = { goToImageDetailsScreen.invoke("1234") }) {
             Text(text = "Go to image details screen, 1234")
