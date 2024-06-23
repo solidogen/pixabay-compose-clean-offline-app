@@ -47,11 +47,6 @@ fun ImageListScreen(
     ) {
         val state by viewModel.state.collectAsState(DataState.loading())
 
-        // TODO - is this still needed?
-        val images by remember {
-            derivedStateOf { state.data }
-        }
-
         Button(onClick = {
             viewModel.setSearchQuery(listOf("Ala", "Kot", "Pat", "Mat").random())
         }) {
@@ -59,11 +54,12 @@ fun ImageListScreen(
         }
         VerticalSpace(padding = 16.dp)
 
-        ImageList(
-            images = ComposeImmutableList.from(images.orEmpty()),
-            goToImageDetailsScreen = goToImageDetailsScreen
-        )
-
+        state.data?.let { images ->
+            ImageList(
+                images = ComposeImmutableList.from(images),
+                goToImageDetailsScreen = goToImageDetailsScreen
+            )
+        }
         state.error?.let {
             ErrorState(error = it, onRetry = viewModel::retrySearch)
         }
