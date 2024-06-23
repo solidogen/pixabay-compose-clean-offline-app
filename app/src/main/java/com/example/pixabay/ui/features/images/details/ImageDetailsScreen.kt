@@ -1,10 +1,7 @@
 package com.example.pixabay.ui.features.images.details
 
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.material3.Card
@@ -72,7 +69,7 @@ private fun ImageContainer(
         ) {
             ImageComposable(
                 image = image,
-                url = { it.largeImageUrl },
+                isThumbnail = false,
                 modifier = Modifier.wrapContentHeight(),
                 contentScale = ContentScale.Fit
             )

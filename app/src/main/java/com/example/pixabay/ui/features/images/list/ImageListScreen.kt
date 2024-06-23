@@ -109,7 +109,7 @@ private fun ImageListItem(
         ) {
             ImageComposable(
                 image = image,
-                url = { it.thumbnailUrl },
+                isThumbnail = true,
                 modifier = Modifier
                     .fillMaxWidth()
                     .clickable {
