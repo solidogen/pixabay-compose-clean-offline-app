@@ -23,6 +23,10 @@ fun ImageDetailsScreen(
         val state by viewModel.state.collectAsState(DataState.loading())
         val image = state.data
 
+        if (state.isLoading) {
+            LoadingIndicator()
+        }
+
         image?.let {
             ImageComposable(
                 image = image,
@@ -32,9 +36,6 @@ fun ImageDetailsScreen(
 
         state.error?.let {
             ErrorState(error = it, onRetry = {})
-        }
-        if (state.isLoading) {
-            LoadingIndicator()
         }
     }
 }

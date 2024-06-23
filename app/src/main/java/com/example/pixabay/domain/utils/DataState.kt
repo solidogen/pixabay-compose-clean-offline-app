@@ -7,9 +7,10 @@ data class DataState<out T>(
 ) {
     companion object {
         fun <T> success(data: T): DataState<T> = DataState(data = data)
-        fun <T> error(error: DataError, cachedData: T?): DataState<T> =
+        fun <T> error(error: DataError, cachedData: T? = null): DataState<T> =
             DataState(error = error, data = cachedData)
-        fun <T> loading(): DataState<T> = DataState(isLoading = true)
+        fun <T> loading(cachedData: T? = null): DataState<T> =
+            DataState(isLoading = true, data = cachedData)
     }
 }
 

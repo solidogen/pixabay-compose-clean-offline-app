@@ -22,11 +22,11 @@ class GetImageByIdUseCase @Inject constructor(
             if (image != null) {
                 emit(DataState.success(image))
             } else {
-                emit(DataState.error(DataError.UnknownError, cachedData = null))
+                emit(DataState.error(DataError.UnknownError))
             }
         } catch (e: Throwable) {
             Timber.e(e)
-            emit(DataState.error(DataError.UnknownError, cachedData = null))
+            emit(DataState.error(DataError.UnknownError))
         }
     }
 }
