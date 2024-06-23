@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Button
@@ -26,9 +27,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.DpSize
+import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.compose.AsyncImagePainter
@@ -83,17 +88,43 @@ fun ImageComposable(
     url: (ImageModel) -> String,
     modifier: Modifier = Modifier,
     contentScale: ContentScale = ContentScale.Fit,
+    loadingIndicatorSize: Dp = 20.dp
+) {
+    LoadableAsyncImage(
+        model = url(image),
+        contentDescription = image.tagsString,
+        modifier = modifier,
+        contentScale = contentScale,
+        placeholderMemoryCacheKey = image.id
+    )
+
+//    DeprecatedImageComposable(
+//        image = image,
+//        url = url,
+//        modifier = modifier,
+//        contentScale = contentScale
+//    )
+}
+
+@Deprecated("use ImageComposable -> LoadableAsyncImage as a content")
+@Composable
+fun DeprecatedImageComposable(
+    image: ImageModel,
+    url: (ImageModel) -> String,
+    modifier: Modifier = Modifier,
+    contentScale: ContentScale = ContentScale.Fit,
+    loadingIndicatorSize: Dp = 20.dp
 ) {
     SubcomposeAsyncImage(
         model = url(image),
         contentDescription = image.tagsString,
         modifier = modifier,
-        contentScale = ContentScale.Crop
+        contentScale = contentScale
     ) {
         val state = painter.state
         if (state is AsyncImagePainter.State.Loading || state is AsyncImagePainter.State.Error) {
-            LoadingIndicator(
-//                size = loadingIndicatorSize,
+            CircularProgressIndicator(
+                modifier = Modifier.size(loadingIndicatorSize)
             )
         } else {
             SubcomposeAsyncImageContent()
@@ -112,7 +143,8 @@ fun LoadableAsyncImage(
 ) {
     val context = LocalContext.current
     val imageLoader = context.imageLoader
-    var isLoading by rememberSaveable(model) { mutableStateOf(true) }
+    var placeholderBitmap by remember(placeholderMemoryCacheKey) { mutableStateOf<Bitmap?>(null) }
+    var isLoading by rememberSaveable(placeholderMemoryCacheKey) { mutableStateOf(true) }
 
     LaunchedEffect(placeholderMemoryCacheKey) {
         placeholderMemoryCacheKey?.let {
@@ -126,7 +158,7 @@ fun LoadableAsyncImage(
         contentAlignment = Alignment.Center,
     ) {
         AsyncImage(
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier,
             model = ImageRequest.Builder(context)
                 .data(model)
                 .apply {
@@ -149,7 +181,8 @@ fun LoadableAsyncImage(
                 LoadingIndicator(
                     size = loadingIndicatorSize,
                 )
-            } else {
+            }
+            else {
                 Image(
                     modifier = Modifier.fillMaxSize(),
                     bitmap = (placeholderBitmap as Bitmap).asImageBitmap(),
