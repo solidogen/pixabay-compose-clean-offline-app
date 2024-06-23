@@ -17,10 +17,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import coil.compose.AsyncImage
 import com.example.pixabay.domain.model.ImageModel
 import com.example.pixabay.domain.utils.DataState
 import com.example.pixabay.ui.utils.ErrorState
+import com.example.pixabay.ui.utils.ImageComposable
 import com.example.pixabay.ui.utils.VerticalSpace
 
 @Composable
@@ -75,9 +75,9 @@ private fun ImageList(
             items = images,
             key = { it.id }
         ) { image ->
-            AsyncImage(
-                model = image.thumbnailUrl,
-                contentDescription = image.tags,
+            ImageComposable(
+                image = image,
+                url = { it.thumbnailUrl },
                 modifier = Modifier.clickable {
                     goToImageDetailsScreen.invoke(image.id)
                 }
