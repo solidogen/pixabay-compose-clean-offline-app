@@ -36,21 +36,19 @@ object NetworkModule {
     @Provides
     @Singleton
     fun provideHttpLoggingInterceptor(): HttpLoggingInterceptor = HttpLoggingInterceptor().apply {
-        level = if (BuildConfig.DEBUG) Level.BODY else Level.NONE
+        level = if (BuildConfig.DEBUG) Level.BASIC else Level.NONE
     }
 
     @Provides
     @Singleton
     fun provideOkHttpClient(
-        apiKeyInterceptor: ApiKeyInterceptor,
-        httpLoggingInterceptor: HttpLoggingInterceptor
+        apiKeyInterceptor: ApiKeyInterceptor
     ): OkHttpClient =
         OkHttpClient.Builder()
             .connectTimeout(10, TimeUnit.SECONDS)
             .readTimeout(10, TimeUnit.SECONDS)
             .writeTimeout(10, TimeUnit.SECONDS)
             .addInterceptor(apiKeyInterceptor)
-            .addInterceptor(httpLoggingInterceptor)
             .build()
 
     @Provides
@@ -67,8 +65,15 @@ object NetworkModule {
     @Singleton
     fun provideRetrofit(
         retrofitBuilder: Retrofit.Builder,
-        okHttpClient: OkHttpClient
-    ): Retrofit = retrofitBuilder.client(okHttpClient).build()
+        okHttpClient: OkHttpClient,
+        httpLoggingInterceptor: HttpLoggingInterceptor // only for retrofit, coil has it's own
+    ): Retrofit = retrofitBuilder
+        .client(
+            okHttpClient.newBuilder()
+                .addInterceptor(httpLoggingInterceptor)
+                .build()
+        )
+        .build()
 
     @Provides
     @Singleton

@@ -32,7 +32,7 @@ class MainApplication : Application(), ImageLoaderFactory {
             .okHttpClient(okHttpClient)
             .apply {
                 if (BuildConfig.DEBUG) {
-                    this.logger(DebugLogger(Log.ERROR))
+                    this.logger(DebugLogger())
                 }
             }
             .crossfade(true)

@@ -36,6 +36,7 @@ import coil.compose.SubcomposeAsyncImage
 import coil.compose.SubcomposeAsyncImageContent
 import coil.imageLoader
 import coil.memory.MemoryCache
+import coil.request.ImageRequest
 import com.example.pixabay.R
 import com.example.pixabay.domain.model.ImageModel
 import com.example.pixabay.domain.utils.DataError
@@ -109,8 +110,8 @@ fun LoadableAsyncImage(
     loadingIndicatorSize: Dp = 40.dp,
     contentScale: ContentScale = ContentScale.Fit,
 ) {
-    val imageLoader = LocalContext.current.imageLoader
-    var placeholderBitmap by remember(placeholderMemoryCacheKey) { mutableStateOf<Bitmap?>(null) }
+    val context = LocalContext.current
+    val imageLoader = context.imageLoader
     var isLoading by rememberSaveable(model) { mutableStateOf(true) }
 
     LaunchedEffect(placeholderMemoryCacheKey) {
@@ -126,7 +127,14 @@ fun LoadableAsyncImage(
     ) {
         AsyncImage(
             modifier = Modifier.fillMaxSize(),
-            model = model,
+            model = ImageRequest.Builder(context)
+                .data(model)
+                .apply {
+                    placeholderMemoryCacheKey?.let {
+                        placeholderMemoryCacheKey(MemoryCache.Key(it))
+                    }
+                }
+                .build(),
             contentDescription = contentDescription,
             contentScale = contentScale,
             onSuccess = { isLoading = false },
