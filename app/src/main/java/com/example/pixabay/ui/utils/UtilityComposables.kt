@@ -81,7 +81,7 @@ fun ImageComposable(
     image: ImageModel,
     url: (ImageModel) -> String,
     modifier: Modifier = Modifier,
-//    loadingIndicatorSize: Dp = 20.dp
+    contentScale: ContentScale = ContentScale.Fit,
 ) {
     SubcomposeAsyncImage(
         model = url(image),
