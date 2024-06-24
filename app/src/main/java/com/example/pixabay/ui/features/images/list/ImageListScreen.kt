@@ -30,7 +30,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
@@ -97,6 +96,7 @@ private fun ImageList(
 ) {
     val configuration = LocalConfiguration.current
     val isLandscape = configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
+    var imageForDetailsDialog by remember { mutableStateOf<ImageModel?>(null) }
 
     LazyVerticalStaggeredGrid(
         columns = StaggeredGridCells.Fixed(if (isLandscape) 3 else 2),
@@ -108,25 +108,50 @@ private fun ImageList(
         ) { image ->
             ImageListItem(
                 image = image,
-                goToImageDetailsScreen = goToImageDetailsScreen,
-                modifier = Modifier.padding(1.dp)
+                modifier = Modifier.padding(1.dp),
+                showDialog = {
+                    imageForDetailsDialog = it
+                }
             )
         }
+    }
+
+    imageForDetailsDialog?.let { image ->
+        AlertDialog(
+            onDismissRequest = { imageForDetailsDialog = null },
+            title = { Text(stringResource(id = R.string.liking_the_image)) },
+            text = { Text(stringResource(id = R.string.press_ok_to_show_details)) },
+            confirmButton = {
+                Button(
+                    onClick = {
+                        goToImageDetailsScreen.invoke(image.id)
+                        imageForDetailsDialog = null
+                    }
+                ) {
+                    Text(stringResource(id = android.R.string.ok))
+                }
+            },
+            dismissButton = {
+                Button(
+                    onClick = { imageForDetailsDialog = null }
+                ) {
+                    Text(stringResource(id = android.R.string.cancel))
+                }
+            }
+        )
     }
 }
 
 @Composable
 private fun ImageListItem(
     image: ImageModel,
-    goToImageDetailsScreen: (String) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    showDialog: (ImageModel) -> Unit
 ) {
-    var showDialog by remember { mutableStateOf(false) }
-
     Card(
         border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
         modifier = modifier.clickable {
-            showDialog = true
+            showDialog(image)
         }
     ) {
         Column(
@@ -156,31 +181,6 @@ private fun ImageListItem(
             VerticalSpace(padding = 2.dp)
         }
     }
-
-    if (showDialog) {
-        AlertDialog(
-            onDismissRequest = { showDialog = false },
-            title = { Text(stringResource(id = R.string.liking_the_image)) },
-            text = { Text(stringResource(id = R.string.press_ok_to_show_details)) },
-            confirmButton = {
-                Button(
-                    onClick = {
-                        showDialog = false
-                        goToImageDetailsScreen.invoke(image.id)
-                    }
-                ) {
-                    Text(stringResource(id = android.R.string.ok))
-                }
-            },
-            dismissButton = {
-                Button(
-                    onClick = { showDialog = false }
-                ) {
-                    Text(stringResource(id = android.R.string.cancel))
-                }
-            }
-        )
-    }
 }
 
 @Preview
@@ -197,6 +197,6 @@ fun ImageListItemPreview() {
             comments = 1,
             downloads = 1
         ),
-        goToImageDetailsScreen = {}
+        showDialog = {}
     )
 }

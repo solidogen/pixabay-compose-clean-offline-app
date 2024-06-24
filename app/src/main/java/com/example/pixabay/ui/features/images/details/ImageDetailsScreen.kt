@@ -26,6 +26,7 @@ import androidx.compose.ui.unit.dp
 import com.example.pixabay.R
 import com.example.pixabay.domain.model.ImageModel
 import com.example.pixabay.domain.utils.DataState
+import com.example.pixabay.ui.utils.BackButton
 import com.example.pixabay.ui.utils.BoldJustifiedText
 import com.example.pixabay.ui.utils.CustomChip
 import com.example.pixabay.ui.utils.ErrorState
@@ -35,7 +36,8 @@ import com.example.pixabay.ui.utils.VerticalSpace
 
 @Composable
 fun ImageDetailsScreen(
-    viewModel: ImageDetailsViewModel
+    viewModel: ImageDetailsViewModel,
+    goBack: () -> Unit
 ) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -44,6 +46,10 @@ fun ImageDetailsScreen(
         val state by viewModel.state.collectAsState(DataState.loading())
         val image = state.data
 
+        BackButton(
+            onClick = goBack,
+            modifier = Modifier.align(Alignment.Start)
+        )
         if (state.isLoading) {
             LoadingIndicator()
         }

@@ -56,7 +56,12 @@ private fun NavGraphBuilder.imagesNavGraph(navController: NavController) {
             arguments = listOf(navArgument(ID_PLACEHOLDER_NO_BRACKETS) { type = NavType.StringType })
         ) {
             val viewModel = hiltViewModel<ImageDetailsViewModel>()
-            ImageDetailsScreen(viewModel)
+            ImageDetailsScreen(
+                viewModel,
+                goBack = {
+                    navController.navigateUp()
+                }
+            )
         }
     }
 }
