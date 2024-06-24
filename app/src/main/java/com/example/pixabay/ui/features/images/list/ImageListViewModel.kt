@@ -25,12 +25,23 @@ class ImageListViewModel @Inject constructor(
     private val getImageListUseCase: GetImageListUseCase
 ) : ViewModel() {
 
+    private var lastSetQuery: String = DEFAULT_SEARCH_QUERY
+
     val query: StateFlow<String> =
         savedStateHandle.getStateFlow(SEARCH_QUERY_KEY, DEFAULT_SEARCH_QUERY)
 
     val imagesState: Flow<DataState<List<ImageModel>>> = query
-        .debounce(SEARCH_DEBOUNCE_MS)
-        .flatMapLatest { getImageListUseCase.execute(it) }
+        .debounce { query ->
+            if (query == lastSetQuery) {
+                0L
+            } else {
+                SEARCH_DEBOUNCE_MS
+            }
+        }
+        .flatMapLatest { query ->
+            lastSetQuery = query
+            getImageListUseCase.execute(query)
+        }
 
     fun setSearchQuery(query: String) {
         Timber.d("Setting query to $query")
