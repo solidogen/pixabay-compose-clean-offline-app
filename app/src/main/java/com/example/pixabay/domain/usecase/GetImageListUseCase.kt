@@ -30,7 +30,7 @@ class GetImageListUseCase @Inject constructor(
                 emit(DataState.success(cachedImages))
             } else {
                 Timber.e(cachedImagesResult.exceptionOrNull())
-                emit(DataState.loading(cachedImages))
+                emit(DataState.loading())
             }
 
             // Fresh
