@@ -26,41 +26,8 @@ import com.example.pixabay.R
 import com.example.pixabay.domain.model.ImageModel
 import com.example.pixabay.domain.utils.DataError
 
-@Composable
-fun VerticalSpace(padding: Dp) {
-    Spacer(modifier = Modifier.padding(vertical = padding))
-}
-
-@Composable
-fun ErrorState(
-    error: DataError,
-    onRetry: () -> Unit
-) {
-    val errorText = when (error) {
-        is DataError.ErrorMessage -> error.message
-        DataError.UnknownError -> stringResource(id = R.string.unknown_error)
-    }
-    Card {
-        Column {
-            Text(text = errorText)
-            Button(onClick = onRetry) {
-                Text(text = stringResource(R.string.retry))
-            }
-        }
-    }
-}
-
-@Composable
-fun LoadingIndicator(
-    modifier: Modifier = Modifier,
-    size: Dp? = null
-) {
-    CircularProgressIndicator(
-        modifier = modifier.apply {
-            size?.let { size(it) }
-        }
-    )
-}
+const val THUMBNAIL_CACHE_KEY_AFFIX = "---THUMBNAIL"
+const val LARGE_IMAGE_CACHE_KEY_AFFIX = "---LARGE_IMAGE"
 
 @Composable
 fun ImageComposable(
@@ -70,15 +37,10 @@ fun ImageComposable(
     contentScale: ContentScale = ContentScale.Fit,
 ) {
     LoadableAsyncImage(
-        model = if (isThumbnail) {
-            image.thumbnailUrl
-        } else {
-            image.largeImageUrl
-        },
+        model = image.getImageUrl(isThumbnail),
         contentDescription = image.tagsString,
-        isThumbnail = isThumbnail,
         modifier = modifier,
-        cacheKey = image.id,
+        cacheKey = image.getCacheKey(isThumbnail),
         contentScale = contentScale
     )
 }
@@ -87,7 +49,6 @@ fun ImageComposable(
 fun LoadableAsyncImage(
     model: Any?,
     contentDescription: String?,
-    isThumbnail: Boolean,
     modifier: Modifier = Modifier,
     cacheKey: String? = null,
     loadingIndicatorSize: Dp = 40.dp,
@@ -103,27 +64,72 @@ fun LoadableAsyncImage(
             model = ImageRequest.Builder(context)
                 .data(model)
                 .placeholderMemoryCacheKey(cacheKey)
-                .apply {
-                    if (isThumbnail) {
-                        diskCacheKey(cacheKey)
-                            .memoryCacheKey(cacheKey)
-                    }
-                }
+                .diskCacheKey(cacheKey)
+                .memoryCacheKey(cacheKey)
                 .build(),
             contentDescription = contentDescription,
             modifier = modifier,
             contentScale = contentScale
         ) {
             val state = painter.state
-            if (state is AsyncImagePainter.State.Loading || state is AsyncImagePainter.State.Error) {
-                CircularProgressIndicator(
-                    modifier = Modifier
-                        .requiredSize(loadingIndicatorSize)
-                        .padding(40.dp)
-                )
-            } else {
-                SubcomposeAsyncImageContent()
+            when (state) {
+                is AsyncImagePainter.State.Loading -> {
+                    CircularProgressIndicator(
+                        modifier = Modifier
+                            .requiredSize(loadingIndicatorSize)
+                            .padding(40.dp)
+                    )
+                }
+                is AsyncImagePainter.State.Error -> {
+                    ErrorState(error = DataError.UnknownError)
+                }
+                else -> {
+                    SubcomposeAsyncImageContent()
+                }
             }
         }
     }
+}
+
+@Composable
+fun VerticalSpace(padding: Dp) {
+    Spacer(modifier = Modifier.padding(vertical = padding))
+}
+
+@Composable
+fun ErrorState(
+    error: DataError,
+    onRetry: (() -> Unit)? = null
+) {
+    val errorText = when (error) {
+        is DataError.ErrorMessage -> error.message
+        DataError.UnknownError -> stringResource(id = R.string.unknown_error)
+    }
+    Card(
+        modifier = Modifier.padding(4.dp)
+    ) {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(text = errorText)
+            VerticalSpace(padding = 4.dp)
+            onRetry?.let {
+                Button(onClick = onRetry) {
+                    Text(text = stringResource(R.string.retry))
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun LoadingIndicator(
+    modifier: Modifier = Modifier,
+    size: Dp? = null
+) {
+    CircularProgressIndicator(
+        modifier = modifier.apply {
+            size?.let { size(it) }
+        }
+    )
 }

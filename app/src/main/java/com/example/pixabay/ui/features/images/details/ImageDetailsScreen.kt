@@ -2,6 +2,8 @@ package com.example.pixabay.ui.features.images.details
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.material3.Card
@@ -29,7 +31,7 @@ fun ImageDetailsScreen(
 ) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier
+        modifier = Modifier.fillMaxSize()
     ) {
         val state by viewModel.state.collectAsState(DataState.loading())
         val image = state.data
@@ -45,12 +47,12 @@ fun ImageDetailsScreen(
             )
             ImageContainer(
                 image = image,
-                modifier = Modifier.padding(1.dp)
+                modifier = Modifier.fillMaxWidth().padding(1.dp)
             )
         }
 
         state.error?.let {
-            ErrorState(error = it, onRetry = {})
+            ErrorState(error = it)
         }
     }
 }
@@ -61,16 +63,16 @@ private fun ImageContainer(
     modifier: Modifier = Modifier
 ) {
     Column(
-        horizontalAlignment = Alignment.CenterHorizontally
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = modifier
     ) {
         Card(
             border = BorderStroke(1.dp, Color.Black),
-            modifier = modifier
         ) {
             ImageComposable(
                 image = image,
                 isThumbnail = false,
-                modifier = Modifier.wrapContentHeight(),
+                modifier = Modifier,
                 contentScale = ContentScale.Fit
             )
         }

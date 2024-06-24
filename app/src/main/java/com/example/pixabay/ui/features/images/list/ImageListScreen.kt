@@ -81,6 +81,7 @@ private fun ImageList(
 ) {
     val configuration = LocalConfiguration.current
     val isLandscape = configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
+
     LazyVerticalStaggeredGrid(
         columns = StaggeredGridCells.Fixed(if (isLandscape) 3 else 2),
         modifier = Modifier.scrollable(rememberScrollState(), Orientation.Vertical)

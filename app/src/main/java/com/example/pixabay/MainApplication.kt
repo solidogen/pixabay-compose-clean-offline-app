@@ -1,13 +1,11 @@
 package com.example.pixabay
 
 import android.app.Application
-import android.util.Log
 import coil.ImageLoader
 import coil.ImageLoaderFactory
 import coil.disk.DiskCache
 import coil.memory.MemoryCache
 import coil.util.DebugLogger
-import com.example.pixabay.ui.utils.ImageModelKeyer
 import dagger.hilt.android.HiltAndroidApp
 import okhttp3.OkHttpClient
 import timber.log.Timber
@@ -44,12 +42,10 @@ class MainApplication : Application(), ImageLoaderFactory {
             .diskCache {
                 DiskCache.Builder()
                     .directory(cacheDir.resolve("image_cache"))
-                    .maxSizePercent(0.04)
+                    .maxSizePercent(0.1)
                     .build()
             }
-            .components {
-                add(ImageModelKeyer())
-            }
+            .respectCacheHeaders(false)
             .build()
     }
 }

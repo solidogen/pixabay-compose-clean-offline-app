@@ -11,6 +11,9 @@ import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Singleton
 
+/**
+ * First emits cached images for given query if available, then fetches fresh images and emits again
+ * */
 @Singleton
 class GetImageListUseCase @Inject constructor(
     private val imagesRepository: ImagesRepository
