@@ -3,4 +3,6 @@
     <string name="retry">Retry</string>
     <string name="unknown_error">Unknown error, please try again</string>
     <string name="by_username">By %s</string>
+    <string name="liking_the_image">Liking the image?</string>
+    <string name="press_ok_to_show_details">Press OK to show details</string>
 </resources>

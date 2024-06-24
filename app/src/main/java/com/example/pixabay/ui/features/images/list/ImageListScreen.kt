@@ -16,12 +16,16 @@ import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
 import androidx.compose.foundation.lazy.staggeredgrid.items
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -109,10 +113,12 @@ private fun ImageListItem(
     goToImageDetailsScreen: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
+    var showDialog by remember { mutableStateOf(false) }
+
     Card(
         border = BorderStroke(1.dp, Color.Black),
         modifier = modifier.clickable {
-            goToImageDetailsScreen.invoke(image.id)
+            showDialog = true
         }
     ) {
         Column(
@@ -141,6 +147,31 @@ private fun ImageListItem(
             }
             VerticalSpace(padding = 2.dp)
         }
+    }
+
+    if (showDialog) {
+        AlertDialog(
+            onDismissRequest = { showDialog = false },
+            title = { Text(stringResource(id = R.string.liking_the_image)) },
+            text = { Text(stringResource(id = R.string.press_ok_to_show_details)) },
+            confirmButton = {
+                Button(
+                    onClick = {
+                        showDialog = false
+                        goToImageDetailsScreen.invoke(image.id)
+                    }
+                ) {
+                    Text(stringResource(id = android.R.string.ok))
+                }
+            },
+            dismissButton = {
+                Button(
+                    onClick = { showDialog = false }
+                ) {
+                    Text(stringResource(id = android.R.string.cancel))
+                }
+            }
+        )
     }
 }
 
