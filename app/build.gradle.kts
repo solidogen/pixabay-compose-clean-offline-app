@@ -107,4 +107,5 @@ dependencies {
     testImplementation(libs.truth)
     androidTestImplementation(libs.truth)
     testImplementation(libs.kotlinx.coroutines.test)
+    testImplementation(libs.turbine)
 }

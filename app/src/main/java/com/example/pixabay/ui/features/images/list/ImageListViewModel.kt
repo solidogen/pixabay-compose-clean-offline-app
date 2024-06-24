@@ -57,7 +57,7 @@ class ImageListViewModel @Inject constructor(
         }
     }
 
-    private companion object {
+    internal companion object {
         const val DEFAULT_SEARCH_QUERY = "fruits"
         const val SEARCH_QUERY_KEY = "SEARCH_QUERY_KEY"
         const val RETRY_DELAY_MS = 10L // lets savedStateHandle emit empty string first
