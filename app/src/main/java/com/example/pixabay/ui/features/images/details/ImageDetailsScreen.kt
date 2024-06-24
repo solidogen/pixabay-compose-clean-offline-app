@@ -1,7 +1,10 @@
 package com.example.pixabay.ui.features.images.details
 
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -21,9 +24,11 @@ import androidx.compose.ui.unit.dp
 import com.example.pixabay.R
 import com.example.pixabay.domain.model.ImageModel
 import com.example.pixabay.domain.utils.DataState
+import com.example.pixabay.ui.utils.CustomChip
 import com.example.pixabay.ui.utils.ErrorState
 import com.example.pixabay.ui.utils.ImageComposable
 import com.example.pixabay.ui.utils.LoadingIndicator
+import com.example.pixabay.ui.utils.VerticalSpace
 
 @Composable
 fun ImageDetailsScreen(
@@ -45,6 +50,17 @@ fun ImageDetailsScreen(
                 text = stringResource(id = R.string.by_username, image.username),
                 textAlign = TextAlign.Justify
             )
+            @OptIn(ExperimentalLayoutApi::class)
+            FlowRow(
+                horizontalArrangement = Arrangement.spacedBy(2.dp),
+                verticalArrangement = Arrangement.spacedBy(2.dp),
+                modifier = Modifier
+            ) {
+                image.tagList.forEach { tag ->
+                    CustomChip(text = tag)
+                }
+            }
+            VerticalSpace(padding = 2.dp)
             ImageContainer(
                 image = image,
                 modifier = Modifier.fillMaxWidth().padding(1.dp)
