@@ -2,7 +2,10 @@
     <string name="app_name">pixabay-compose-clean-offline-app</string>
     <string name="retry">Retry</string>
     <string name="unknown_error">Unknown error, please try again</string>
-    <string name="by_username">By %s</string>
     <string name="liking_the_image">Liking the image?</string>
     <string name="press_ok_to_show_details">Press OK to show details</string>
+    <string name="by_username">By %s</string>
+    <string name="downloads">Downloads: %d</string>
+    <string name="likes">Likes: %d</string>
+    <string name="comments">Comments: %d</string>
 </resources>

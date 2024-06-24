@@ -6,6 +6,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
@@ -19,6 +20,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -43,6 +45,7 @@ import com.example.pixabay.domain.utils.DataState
 import com.example.pixabay.ui.utils.CustomChip
 import com.example.pixabay.ui.utils.ErrorState
 import com.example.pixabay.ui.utils.ImageComposable
+import com.example.pixabay.ui.utils.ImageSearchBar
 import com.example.pixabay.ui.utils.LoadingIndicator
 import com.example.pixabay.ui.utils.VerticalSpace
 
@@ -55,14 +58,17 @@ fun ImageListScreen(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier.fillMaxSize()
     ) {
-        val state by viewModel.state.collectAsState(DataState.loading())
+        val state by viewModel.imagesState.collectAsState(DataState.loading())
+        val query by viewModel.query.collectAsState()
 
-        Button(onClick = {
-            viewModel.setSearchQuery(listOf("Ala", "Kot", "Pat", "Mat").random())
-        }) {
-            Text(text = "Random query")
-        }
-        VerticalSpace(padding = 16.dp)
+        ImageSearchBar(
+            query = query,
+            onQueryChange = { viewModel.setSearchQuery(it) },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 8.dp)
+        )
+        VerticalSpace(padding = 8.dp)
 
         state.data?.let { images ->
             ImageList(
@@ -70,14 +76,16 @@ fun ImageListScreen(
                 goToImageDetailsScreen = goToImageDetailsScreen
             )
         }
-        state.error?.let {
-            ErrorState(error = it, onRetry = viewModel::retrySearch)
-        }
-        if (state.isLoading) {
-            LoadingIndicator()
-        }
-        Button(onClick = { goToImageDetailsScreen.invoke("1234") }) {
-            Text(text = "Go to image details screen, 1234")
+        Box(
+            modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.Center
+        ) {
+            state.error?.let {
+                ErrorState(error = it, onRetry = viewModel::retrySearch)
+            }
+            if (state.isLoading) {
+                LoadingIndicator()
+            }
         }
     }
 }
@@ -116,7 +124,7 @@ private fun ImageListItem(
     var showDialog by remember { mutableStateOf(false) }
 
     Card(
-        border = BorderStroke(1.dp, Color.Black),
+        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
         modifier = modifier.clickable {
             showDialog = true
         }
@@ -184,7 +192,7 @@ fun ImageListItemPreview() {
             id = "id",
             largeImageUrl = "",
             thumbnailUrl = "",
-            username = "",
+            username = "username",
             likes = 1,
             comments = 1,
             downloads = 1
