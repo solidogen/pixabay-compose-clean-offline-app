@@ -84,6 +84,10 @@ dependencies {
 
     implementation(libs.coil.compose)
 
+    implementation(libs.kotlinx.coroutines.android)
+    implementation(libs.kotlinx.coroutines.core)
+    implementation(libs.coil.compose)
+
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
@@ -95,4 +99,9 @@ dependencies {
     kspAndroidTest(libs.hilt.compiler)
     testImplementation(libs.androidx.room.testing)
     androidTestImplementation(libs.hilt.android.testing)
+    testImplementation(libs.mockk)
+    testImplementation(libs.mockk.android)
+    androidTestImplementation(libs.mockk.android)
+    testImplementation(libs.truth)
+    testImplementation(libs.kotlinx.coroutines.test)
 }
