@@ -8,4 +8,5 @@
     <string name="downloads">Downloads: %d</string>
     <string name="likes">Likes: %d</string>
     <string name="comments">Comments: %d</string>
+    <string name="search">Search...</string>
 </resources>
