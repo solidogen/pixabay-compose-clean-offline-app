@@ -32,6 +32,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -44,6 +45,7 @@ import com.example.pixabay.domain.utils.DataState
 import com.example.pixabay.ui.utils.CustomChip
 import com.example.pixabay.ui.utils.ErrorState
 import com.example.pixabay.ui.utils.ImageComposable
+import com.example.pixabay.ui.utils.TestTags
 import com.example.pixabay.ui.utils.ImageSearchBar
 import com.example.pixabay.ui.utils.LoadingIndicator
 import com.example.pixabay.ui.utils.VerticalSpace
@@ -66,6 +68,7 @@ fun ImageListScreen(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 8.dp)
+                .testTag(TestTags.SEARCH_BAR)
         )
         VerticalSpace(padding = 8.dp)
 
@@ -76,8 +79,10 @@ fun ImageListScreen(
             )
         }
         Box(
-            modifier = Modifier.fillMaxSize(),
-            contentAlignment = Alignment.Center
+            modifier = Modifier
+                .fillMaxSize()
+                .testTag(TestTags.LOADING_INDICATOR),
+            contentAlignment = Alignment.Center,
         ) {
             state.error?.let {
                 ErrorState(error = it, onRetry = viewModel::retrySearch)
@@ -150,9 +155,9 @@ private fun ImageListItem(
 ) {
     Card(
         border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
-        modifier = modifier.clickable {
-            showDialog(image)
-        }
+        modifier = modifier
+            .clickable { showDialog(image) }
+            .testTag(TestTags.IMAGE_ITEM)
     ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally

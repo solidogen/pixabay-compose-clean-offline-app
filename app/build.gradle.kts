@@ -50,6 +50,13 @@ android {
             merges += "META-INF/LICENSE-notice.md"
         }
     }
+    testOptions {
+        packaging {
+            jniLibs {
+                useLegacyPackaging = true
+            }
+        }
+    }
 }
 
 dependencies {

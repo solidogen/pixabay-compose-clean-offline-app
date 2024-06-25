@@ -4,6 +4,7 @@ import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithTag
 import com.example.pixabay.MainActivity
+import com.example.pixabay.ui.utils.TestTags
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import org.junit.Before
@@ -26,6 +27,6 @@ class NavigationTest {
 
     @Test
     fun app_startsAtImageListScreen() {
-        composeTestRule.onNodeWithTag("SearchBar").assertIsDisplayed()
+        composeTestRule.onNodeWithTag(TestTags.SEARCH_BAR).assertIsDisplayed()
     }
 }

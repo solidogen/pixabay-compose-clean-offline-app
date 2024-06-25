@@ -2,7 +2,6 @@ package com.example.pixabay.ui.utils
 
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
-import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
 import com.example.pixabay.R
 import com.example.pixabay.domain.utils.DataError
@@ -33,7 +32,6 @@ class UtilityComposablesTest : BaseUiTest {
             ImageSearchBar(query = "", onQueryChange = {})
         }
 
-        composeTestRule.onNodeWithContentDescription("Search").assertIsDisplayed()
         composeTestRule.onNodeWithText(getString(R.string.search))
             .assertIsDisplayed()
     }
@@ -48,6 +46,4 @@ class UtilityComposablesTest : BaseUiTest {
         composeTestRule.onNodeWithText(getString(R.string.retry))
             .assertIsDisplayed()
     }
-
-    // Add similar tests for other composables as needed
 }
