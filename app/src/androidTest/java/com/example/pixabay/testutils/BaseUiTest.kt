@@ -8,4 +8,9 @@ interface BaseUiTest {
         .getInstrumentation()
         .targetContext
         .getString(id)
+
+    fun getString(@IdRes id: Int, vararg args: Any?) = InstrumentationRegistry
+        .getInstrumentation()
+        .targetContext
+        .getString(id, *args)
 }

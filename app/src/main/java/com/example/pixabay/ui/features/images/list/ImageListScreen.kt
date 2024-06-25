@@ -79,9 +79,7 @@ fun ImageListScreen(
             )
         }
         Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .testTag(TestTags.LOADING_INDICATOR),
+            modifier = Modifier.fillMaxSize(),
             contentAlignment = Alignment.Center,
         ) {
             state.error?.let {

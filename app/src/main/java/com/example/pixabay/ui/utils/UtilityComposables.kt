@@ -197,7 +197,7 @@ fun LoadingIndicator(
     CircularProgressIndicator(
         modifier = modifier.apply {
             size?.let { size(it) }
-        }
+        }.testTag(TestTags.LOADING_INDICATOR)
     )
 }
 
